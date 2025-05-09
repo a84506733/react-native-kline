@@ -115,4 +115,46 @@ public class NumberTools {
         }
     }
 
+    /**
+     * 修改小数显示格式,如果小数位过长多余的0用{num}显示
+     * */
+    public static String formatDecimal(Object num) {
+        String temp;
+        if (num instanceof String) {
+            temp = (String) num;
+        } else if (num instanceof Number) {
+            temp = new BigDecimal(num.toString()).toString();
+        } else {
+            return String.valueOf(num); // Handle other types as string
+        }
+
+        String[] arr = temp.split("\\."); // Split by literal dot
+        if (arr.length != 2) {
+            return temp;
+        } else {
+            int count = 0;
+            for (int i = 0; i < arr[1].length(); i++) {
+                if (arr[1].charAt(i) != '0') {
+                    break;
+                } else {
+                    count++;
+                }
+            }
+
+            if (count > 2) {
+                String lastStr = "";
+                if (arr[1].length() > count) {
+                    lastStr = arr[1].substring(count, Math.min(count + 4, arr[1].length()));
+                }
+                return arr[0] + ".0{" + count + "}" + lastStr;
+            } else {
+                String lastStr = "";
+                if (arr[1].length() > count) {
+                    lastStr = arr[1].substring(0, Math.min(count + 4, arr[1].length()));
+                }
+                return arr[0] + "." + lastStr;
+            }
+        }
+    }
+
 }

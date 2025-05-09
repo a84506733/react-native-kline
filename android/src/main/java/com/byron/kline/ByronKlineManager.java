@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
+import static com.byron.kline.utils.NumberTools.formatDecimal;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -645,7 +647,9 @@ public class ByronKlineManager extends ViewGroupManager<ViewGroup> {
                 new ValueFormatter() {
                     @Override
                     public String format(float value) {
-                        return String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
+                        // return String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
+                        String temp = String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
+                        return formatDecimal(temp);
                     }
                 }
         );

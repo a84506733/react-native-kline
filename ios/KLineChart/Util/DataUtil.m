@@ -342,6 +342,65 @@
       }
     }
 }
++(NSString*)formatDecimal:(id)num{
+    NSString *temp;
+    if ([num isKindOfClass:[NSString class]]) {
+        temp = (NSString *)num;
+    } else if ([num isKindOfClass:[NSNumber class]]) {
+        temp = [self toNumberString:num];
+    } else {
+        // 处理其他类型，如果需要的话
+        temp = [NSString stringWithFormat:@"%@", num];
+    }
 
+    NSArray *arr = [temp componentsSeparatedByString:@"."];
 
+    if (arr.count != 2) {
+        return temp;
+    } else {
+        NSString *decimalPart = arr[1];
+        NSInteger count = 0;
+        for (NSInteger i = 0; i < decimalPart.length; i++) {
+            if ([decimalPart characterAtIndex:i] != '0') {
+                break;
+            } else {
+                count++;
+            }
+        }
+
+        if (count > 2) {
+            if (decimalPart.length >= count + 4) {
+                NSString *lastStr = [decimalPart substringWithRange:NSMakeRange(count, 4)];
+                return [NSString stringWithFormat:@"%@.0{%ld}%@", arr[0], (long)count, lastStr];
+            } else {
+                // 如果剩余长度不足 4 位，则取剩余所有
+                NSString *lastStr = [decimalPart substringFromIndex:count];
+                return [NSString stringWithFormat:@"%@.0{%ld}%@", arr[0], (long)count, lastStr];
+            }
+        } else {
+            if (decimalPart.length >= count + 4) {
+                NSString *lastStr = [decimalPart substringToIndex:count + 4];
+                return [NSString stringWithFormat:@"%@.%@", arr[0], lastStr];
+            } else {
+                // 如果长度不足 count + 4，则取所有小数部分
+                return [NSString stringWithFormat:@"%@.%@", arr[0], decimalPart];
+            }
+        }
+    }
+}
+
++(NSString*)toNumberString:(id)num {
+    if ([num isKindOfClass:[NSString class]]) {
+        return (NSString *)num;
+    } else if ([num isKindOfClass:[NSNumber class]]) {
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [formatter setMaximumFractionDigits:20]; // 设置足够大的小数位数，避免截断
+        [formatter setNotANumberSymbol:@"NaN"];
+        NSString *stringFromNumber = [formatter stringFromNumber:num];
+        return stringFromNumber ?: [NSString stringWithFormat:@"%@", num];
+    } else {
+        return [NSString stringWithFormat:@"%@", num];
+    }
+}
 @end

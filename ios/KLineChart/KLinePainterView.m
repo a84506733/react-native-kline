@@ -13,6 +13,7 @@
 #import "ChartStyle.h"
 #import "NSString+Rect.h"
 #import "KLineStateManager.h"
+#import "DataUtil.h"
 
 @interface KLinePainterView()
 @property(nonatomic,assign) CGFloat displayHeight;
@@ -429,7 +430,8 @@
 -(void)drawLongPressCrossLineText:(CGContextRef)context curPoint:(KLineModel *)curPoint curX:(CGFloat)curX y:(CGFloat)y {
     NSNumber *fixedPrice = [KLineStateManager manager].pricePrecision;
     NSString *fixedPriceStr = [NSString stringWithFormat:@"%@%@f", @"%.", fixedPrice];
-    NSString *text = [NSString stringWithFormat:fixedPriceStr,curPoint.close];
+//    NSString *text = [NSString stringWithFormat:fixedPriceStr,curPoint.close];
+    NSString *text = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.close]]; //[NSString stringWithFormat:fixedPriceStr,curPoint.close];
     CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
     CGFloat padding = 3;
     CGFloat textHeight = rect.size.height + padding * 2;
@@ -490,7 +492,8 @@
     KLineModel *point = self.datas.firstObject;
     NSNumber *fixedPrice = [KLineStateManager manager].pricePrecision;
     NSString *fixedPriceStr = [NSString stringWithFormat:@"%@%@f", @"%.", fixedPrice];
-    NSString *text = [NSString stringWithFormat:fixedPriceStr,point.close];
+//    NSString *text = [NSString stringWithFormat:fixedPriceStr,point.close];
+    NSString *text = [DataUtil  formatDecimal:[NSNumber numberWithFloat:point.close]];
     CGFloat fontSize = 10;
     CGRect rect = [text getRectWithFontSize:fontSize];
     CGFloat y = [self.mainRenderer getY:point.close];

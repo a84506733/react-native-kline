@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DataUtil : NSObject
 +(void)calculate:(NSArray<KLineModel *> *)dataList;
 +(void)addLastData:(NSArray<KLineModel *> *)dataList data:(KLineModel *)model;
+
++(NSString*)formatDecimal:(id)num;
 @end
 
 NS_ASSUME_NONNULL_END

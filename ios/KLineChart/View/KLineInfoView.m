@@ -9,6 +9,7 @@
 #import "KLineInfoView.h"
 #import "ChartStyle.h"
 #import "KLineStateManager.h"
+#import "DataUtil.h"
 
 @interface KLineInfoView()
 @property (weak, nonatomic) IBOutlet UILabel *timeLable;
@@ -70,10 +71,10 @@
     formater.dateFormat = @"yyyy-MM-dd HH:mm";
     _timeLable.text = [formater stringFromDate:date];
     
-    _openLable.text = [NSString stringWithFormat:fixedPriceStr,model.open];
-     _highLable.text = [NSString stringWithFormat:fixedPriceStr,model.high];
-     _lowLabel.text = [NSString stringWithFormat:fixedPriceStr,model.low];
-     _clsoeLabel.text = [NSString stringWithFormat:fixedPriceStr,model.close];
+    _openLable.text = [DataUtil  formatDecimal:[NSNumber numberWithFloat:model.open]]; //[NSString stringWithFormat:fixedPriceStr,model.open];
+    _highLable.text = [DataUtil  formatDecimal:[NSNumber numberWithFloat:model.high]];// [NSString stringWithFormat:fixedPriceStr,model.high];
+    _lowLabel.text = [DataUtil  formatDecimal:[NSNumber numberWithFloat:model.low]]; //[NSString stringWithFormat:fixedPriceStr,model.low];
+     _clsoeLabel.text = [DataUtil  formatDecimal:[NSNumber numberWithFloat:model.close]];// [NSString stringWithFormat:fixedPriceStr,model.close];
     CGFloat upDown = model.close - model.open;
     NSString *symbol = @"-";
     if(upDown > 0) {
