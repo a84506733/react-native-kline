@@ -1,5 +1,7 @@
 package com.byron.kline.base;
 
+import static com.byron.kline.utils.NumberTools.formatDecimal;
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -1192,7 +1194,7 @@ public abstract class BaseKChartView extends ScrollAndScaleView {
                 for (int i = 0; i <= gridRowCount; i++) {
                     String text = valueFormatter.format((float) (mainMaxValue - i * rowValue));
                     float v = rowSpace * i + chartPaddingTop;
-                    canvas.drawText(text, tempLeft + yLabelX, v - mainYMoveUpInterval, yLabelPaint);
+                    canvas.drawText(formatDecimal(text), tempLeft + yLabelX, v - mainYMoveUpInterval, yLabelPaint);
 
                 }
                 maxVol = NumberTools.formatAmount(volumeRender.getValueFormatter().
@@ -1239,7 +1241,7 @@ public abstract class BaseKChartView extends ScrollAndScaleView {
 
     private void renderPriceLine(Canvas canvas, float tempRight) {
         float y = getMainY(lastPrice);
-        String priceText = valueFormatter.format(lastPrice);
+        String priceText = formatDecimal(valueFormatter.format(lastPrice));
         float textWidth = commonTextPaint.measureText(priceText);
         float textLeft = tempRight - textWidth - yLabelMarginBorder;
         float klineRight = getX(screenRightIndex);

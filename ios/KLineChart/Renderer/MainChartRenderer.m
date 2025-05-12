@@ -166,7 +166,9 @@
     if(curPoint.MA5Price != 0) {
         NSString *fixedStr = [NSString stringWithFormat:@"%@%@f", @"MA5:%.", fixed];
 //        NSString *str = [NSString stringWithFormat:fixedStr,curPoint.MA5Price];
-        NSString *str = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA5Price]];
+//        NSString *str = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA5Price]];
+        NSString *str = [NSString stringWithFormat:@"%@%@", @"MA5:",  [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA5Price]]];
+
 
         NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma1Color }];
         [topAttributeText appendAttributedString:attr];
@@ -174,15 +176,17 @@
     if(curPoint.MA10Price != 0) {
         NSString *fixedStr = [NSString stringWithFormat:@"%@%@f", @"MA10:%.", fixed];
 //        NSString *str = [NSString stringWithFormat:fixedStr,curPoint.MA10Price];
-        NSString *str = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA10Price]];
+//        NSString *str = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA10Price]];
+        NSString *str = [NSString stringWithFormat:@"%@%@", @"MA10:",  [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA10Price]]];
+
         NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma2Color}];
         [topAttributeText appendAttributedString:attr];
     }
     if(curPoint.MA30Price != 0) {
         NSString *fixedStr = [NSString stringWithFormat:@"%@%@f", @"MA30:%.", fixed];
 //        NSString *str = [NSString stringWithFormat:fixedStr,curPoint.MA30Price];
-        NSString *str = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA30Price]];
-
+        NSString *str = [NSString stringWithFormat:@"%@%@", @"MA30:",  [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA30Price]]];
+        
         NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma3Color}];
         [topAttributeText appendAttributedString:attr];
     }

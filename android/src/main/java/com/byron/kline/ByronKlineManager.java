@@ -1,5 +1,7 @@
 package com.byron.kline;
 
+import static com.byron.kline.utils.NumberTools.formatDecimal;
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
@@ -27,8 +29,6 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import org.jetbrains.annotations.NotNull;
 
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-
-import static com.byron.kline.utils.NumberTools.formatDecimal;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -647,13 +647,14 @@ public class ByronKlineManager extends ViewGroupManager<ViewGroup> {
                 new ValueFormatter() {
                     @Override
                     public String format(float value) {
-                        // return String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
-                        String temp = String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
-                        return formatDecimal(temp);
+                        return String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
+//                        String temp = String.format(Locale.CHINA, "%." + _pricePrecision + "f", value);
+//                        return formatDecimal(temp);
                     }
                 }
         );
     }
+    //
 
     @ReactProp(name = "volumePrecision")
     public void setVolumePrecision(ViewGroup view, int volumePrecision) {

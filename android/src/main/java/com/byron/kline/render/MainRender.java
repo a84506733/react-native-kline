@@ -1,5 +1,7 @@
 package com.byron.kline.render;
 
+import static com.byron.kline.utils.NumberTools.formatDecimal;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -175,17 +177,17 @@ public class MainRender extends BaseRender {
             if (status == Status.MainStatus.MA) {
                 String text;
                 if (Float.MIN_VALUE != values[Constants.INDEX_MA_1]) {
-                    text = indexMa1 + getValueFormatter().format(values[Constants.INDEX_MA_1]) + "  ";
+                    text = indexMa1 + formatDecimal(getValueFormatter().format(values[Constants.INDEX_MA_1])) + "  ";
                     canvas.drawText(text, x, y, indexPaintOne);
                     x += indexPaintOne.measureText(text);
                 }
                 if (Float.MIN_VALUE != values[Constants.INDEX_MA_2]) {
-                    text = indexMa2 + getValueFormatter().format(values[Constants.INDEX_MA_2]) + "  ";
+                    text = indexMa2 + formatDecimal(getValueFormatter().format(values[Constants.INDEX_MA_2])) + "  ";
                     canvas.drawText(text, x, y, indexPaintTwo);
                     x += indexPaintTwo.measureText(text);
                 }
                 if (Float.MIN_VALUE != values[Constants.INDEX_MA_3]) {
-                    text = indexMa3 + getValueFormatter().format(values[Constants.INDEX_MA_3]);
+                    text = indexMa3 + formatDecimal(getValueFormatter().format(values[Constants.INDEX_MA_3]));
                     canvas.drawText(text, x, y, indexPaintThree);
                 }
             } else if (status == Status.MainStatus.BOLL) {
@@ -304,7 +306,7 @@ public class MainRender extends BaseRender {
         float y = top + padding * 2 + selectedTextBaseLine;
         float tempX = right - padding;
         for (int i = 0; i < length; i++) {
-            String s = strings[i];
+            String s = formatDecimal(strings[i]);
             canvas.drawText(marketInfoText[i], left + padding, y, selectorTextPaint);
             if (i == 5 || i == 6) {
                 if (tempDiffPrice >= 0) {
@@ -516,9 +518,9 @@ public class MainRender extends BaseRender {
             String LowString;
             float stringWidth, screenMid = view.getTranslationScreenMid();
             if (minX < screenMid) {
-                LowString = "── " + getValueFormatter().format(mainLowMinValue);
+                LowString = "── " + formatDecimal(getValueFormatter().format(mainLowMinValue));
             } else {
-                LowString = getValueFormatter().format(mainLowMinValue) + " ──";
+                LowString = formatDecimal(getValueFormatter().format(mainLowMinValue)) + " ──";
                 stringWidth = maxMinPaint.measureText(LowString);
                 minX -= stringWidth;
             }
@@ -528,9 +530,9 @@ public class MainRender extends BaseRender {
             String highString;
             y = fixTextYBaseBottom(y);
             if (maxX < screenMid) {
-                highString = "── " + getValueFormatter().format(mainHighMaxValue);
+                highString = "── " + formatDecimal(getValueFormatter().format(mainHighMaxValue));
             } else {
-                highString = getValueFormatter().format(mainHighMaxValue) + " ──";
+                highString = formatDecimal(getValueFormatter().format(mainHighMaxValue)) + " ──";
                 stringWidth = maxMinPaint.measureText(highString);
                 maxX -= stringWidth;
             }

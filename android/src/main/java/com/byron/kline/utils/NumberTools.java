@@ -116,7 +116,7 @@ public class NumberTools {
     }
 
     /**
-     * 修改小数显示格式,如果小数位过长多余的0用{num}显示
+     * 修改小数显示格式
      * */
     public static String formatDecimal(Object num) {
         String temp;
@@ -156,5 +156,4 @@ public class NumberTools {
             }
         }
     }
-
 }
