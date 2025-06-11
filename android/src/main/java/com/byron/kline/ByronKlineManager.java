@@ -599,7 +599,7 @@ public class ByronKlineManager extends ViewGroupManager<ViewGroup> {
             return;
         }
         int size = datas.toArrayList().size();
-        if (size == 0) {
+       if (size == 0 || "[{}]".equals(datas.toString())) {
             return;
         }
         Gson gson = new Gson();
