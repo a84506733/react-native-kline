@@ -600,6 +600,7 @@ public class ByronKlineManager extends ViewGroupManager<ViewGroup> {
         }
         int size = datas.toArrayList().size();
        if (size == 0 || "[{}]".equals(datas.toString())) {
+            _adapter.resetData(new ArrayList<KChartBean>(), true);
             return;
         }
         Gson gson = new Gson();
