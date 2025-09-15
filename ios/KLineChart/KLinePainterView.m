@@ -382,11 +382,13 @@
     if(x1 < self.frame.size.width / 2) {
         NSString *text = [NSString stringWithFormat:maxFixedPrice,_mMainHighMaxValue];
         CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-        [self.mainRenderer drawText:text atPoint:CGPointMake(x1, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+//        [self.mainRenderer drawText:text atPoint:CGPointMake(x1, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+        [self.mainRenderer drawText:text atPoint:CGPointMake(x1, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor];
     } else {
         NSString *text = [NSString stringWithFormat:minFixedPrice,_mMainHighMaxValue];
        CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-       [self.mainRenderer drawText:text atPoint:CGPointMake(x1 - rect.size.width, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+//       [self.mainRenderer drawText:text atPoint:CGPointMake(x1 - rect.size.width, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+        [self.mainRenderer drawText:text atPoint:CGPointMake(x1 - rect.size.width, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor];
     }
     
     CGFloat y2 = [self.mainRenderer getY:_mMainLowMinValue];
@@ -394,11 +396,13 @@
     if(x2 < self.frame.size.width / 2) {
         NSString *text = [NSString stringWithFormat:maxFixedPrice,_mMainLowMinValue];
         CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-        [self.mainRenderer drawText:text atPoint:CGPointMake(x2, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+//        [self.mainRenderer drawText:text atPoint:CGPointMake(x2, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+        [self.mainRenderer drawText:text atPoint:CGPointMake(x2, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor ];
     } else {
         NSString *text = [NSString stringWithFormat:minFixedPrice,_mMainLowMinValue];
        CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-       [self.mainRenderer drawText:text atPoint:CGPointMake(x2 - rect.size.width, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+//       [self.mainRenderer drawText:text atPoint:CGPointMake(x2 - rect.size.width, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+        [self.mainRenderer drawText:text atPoint:CGPointMake(x2 - rect.size.width, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor];
     }
 }
 -(void)drawLongPressCrossLine:(CGContextRef)context {

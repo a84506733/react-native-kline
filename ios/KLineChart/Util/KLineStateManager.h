@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong) UIColor *ma2Color;//m10颜色
 
 @property(nonatomic,strong) UIColor *ma3Color;//m30颜色
+
+@property(nonatomic,strong) UIColor *limitTextColor;//最大最小值颜色
+
 @end
 
 NS_ASSUME_NONNULL_END

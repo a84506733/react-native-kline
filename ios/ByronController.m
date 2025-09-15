@@ -246,6 +246,8 @@
     [KLineStateManager manager].ma2Color = _ma2Color == nil ? ChartColors_ma10Color :[UIColor colorWithHexString:_ma2Color];
     //m30颜色
     [KLineStateManager manager].ma3Color = _ma3Color == nil ? ChartColors_ma30Color :[UIColor colorWithHexString:_ma3Color];
+    //最大最小值颜色
+    [KLineStateManager manager].limitTextColor = _limitTextColor == nil ? ChartColors_maxMinTextColor:[UIColor colorWithHexString:_limitTextColor];
 
 
 }
