@@ -1,21 +1,17 @@
 import React, { useEffect } from "react";
-import { UIManager, Platform } from "react-native";
-import { requireNativeComponent, findNodeHandle } from "react-native";
+import ByronKlineNativeComponent, {
+  Commands,
+} from "./src/ByronKlineNativeComponent";
 
+// Last mounted chart host component reference, used by `dispatchByronKline`.
+// (Same semantics as the legacy implementation.)
 let byronController = undefined;
-const ByronKline = requireNativeComponent("ByronKline");
 
 export const dispatchByronKline = (event = "init", list = []) => {
   if (!byronController) {
     return;
   }
-  UIManager.dispatchViewManagerCommand(
-    findNodeHandle(byronController),
-    Platform.OS === "android"
-      ? "ByronKline"
-      : UIManager.getViewManagerConfig("ByronKline").Commands.byronController,
-    [{ event, list }]
-  );
+  Commands.byronController(byronController, event, list);
 };
 
 export const CandleHollow = {
@@ -55,10 +51,10 @@ const KlineComponent = (props, forwardedRef) => {
   }, []);
 
   return (
-    <ByronKline
+    <ByronKlineNativeComponent
       {...localProps}
       ref={_forwardedRef}
-      onRNMoreKLineData={onMoreKLineDataEvent}
+      onMoreKLineData={onMoreKLineDataEvent}
     />
   );
 };

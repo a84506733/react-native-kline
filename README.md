@@ -18,6 +18,13 @@ _仓库Android源码来源于[icechao/KlineChart](https://github.com/icechao/Kli
 npm i --save react-native-kline
 ```
 
+### 版本要求（Version requirements）
+
+| react-native-kline | 架构 | react-native | 备注 |
+| ------ | ------ | ------ | ------ |
+| 3.x | **New Architecture / Fabric**（codegen spec，Android Kotlin + iOS Swift） | >= 0.76 | 不再支持旧架构（Paper），旧架构用户请使用 2.x |
+| 2.x | 旧架构（JSBridge / Paper） | >= 0.60 | 维护分支 |
+
 ## Examples
 
 To run examples:

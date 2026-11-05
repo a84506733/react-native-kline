@@ -10,9 +10,24 @@
 #import "DataUtil.h"
 
 static KLineStateManager *_manager = nil;
+
+@interface KLineStateManager ()
+- (instancetype)initPrivate;
+@end
+
 @implementation KLineStateManager
 
+// `init` returns the singleton so that Swift's `KLineStateManager()`
+// (which the RNKlineChartController port uses everywhere) resolves to the
+// same instance as the ObjC `[KLineStateManager manager]` callers
+// (KLineChartView / renderers). Without this, every Swift call created a
+// throwaway instance and no state ever reached the chart.
 - (instancetype)init
+{
+    return [KLineStateManager manager];
+}
+
+- (instancetype)initPrivate
 {
     self = [super init];
     if (self) {
@@ -26,7 +41,7 @@ static KLineStateManager *_manager = nil;
 +(instancetype)manager {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _manager = [[self alloc] init];
+        _manager = [[self alloc] initPrivate];
     });
     return _manager;
 }

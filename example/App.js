@@ -8,49 +8,80 @@
  * https://github.com/facebook/react-native
  */
 
-import React, {Component} from 'react';
-import {StyleSheet, Text, SafeAreaView} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import ByronKlineChart from 'react-native-kline';
-import {dispatchByronKline, KLineIndicator} from 'react-native-kline';
+import { dispatchByronKline, KLineIndicator } from 'react-native-kline';
 import axios from 'axios';
 
 export default class App extends Component {
   state = {
     list: [],
+    status: 'loading...',
   };
 
-  onMoreKLineData = (params) => {};
+  onMoreKLineData = (params) => { };
 
   async initKlineChart() {
-    const res = await axios
-      .get(
-        'https://www.okex.com/priapi/v5/market/candles?instId=BTC-USDT&bar=1m&limit=1000',
-      )
-      .catch((err) => {
-        console.log(err);
-        return;
-      });
-    console.log(res);
-    if (!res || !res.data || !res.data.data || !res.data.data.length) {
-      return;
+    let res = null;
+    try {
+      res = await axios.get(
+        'https://www.binance.com/api/v3/uiKlines?symbol=SHIBUSDT&interval=5m&limit=1000',
+        { timeout: 20000 },
+      );
+    } catch (err) {
+      const detail = err.response ? `HTTP ${err.response.status}` : err.message;
+      this.setState({ status: `binance FAIL: ${detail}, trying gate.io...` });
     }
+
     const list = [];
-    for (let i = 0; i < res.data.data.length; i++) {
-      const item = res.data.data[i];
-      // 返回值分别为[timestamp,open,high,low,close,volume]
-      list.push({
-        amount: 0,
-        open: Number(item[1]),
-        close: Number(item[4]),
-        high: Number(item[2]),
-        id: parseInt(Number(item[0]) / 1000),
-        low: Number(item[3]),
-        vol: Number(item[5]),
-      });
+    if (res && Array.isArray(res.data) && res.data.length) {
+      this.setState({ status: `binance OK: ${res.data.length} items` });
+      for (let i = 0; i < res.data.length; i++) {
+        const item = res.data[i];
+        // 返回值分别为[timestamp,open,high,low,close,volume]
+        list.push({
+          amount: 0,
+          open: Number(item[1]),
+          close: Number(item[4]),
+          high: Number(item[2]),
+          id: parseInt(Number(item[0]) / 1000),
+          low: Number(item[3]),
+          vol: Number(item[5]),
+        });
+      }
+    } else {
+      // binance 不可达时降级到 gate.io（国内网络通常可直连）
+      const g = await axios
+        .get(
+          'https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=BTC_USDT&interval=5m&limit=1000',
+          { timeout: 20000 },
+        )
+        .catch((err) => {
+          console.log(err);
+          return null;
+        });
+      if (!g || !g.data) {
+        return;
+      }
+      this.setState({ status: `gate.io OK: ${g.data.length} items` });
+      // 返回值分别为[timestamp(秒),计价量,close,high,low,open,baseVolume,已收盘]
+      for (let i = 0; i < g.data.length; i++) {
+        const item = g.data[i];
+        list.push({
+          amount: 0,
+          open: Number(item[5]),
+          close: Number(item[2]),
+          high: Number(item[3]),
+          id: Number(item[0]),
+          low: Number(item[4]),
+          vol: Number(item[6]),
+        });
+      }
     }
     list.sort((l, r) => (l.id > r.id ? 1 : -1));
-    this.setState({list});
-    this.subscribeKLine();
+    this.setState({ list });
+    // this.subscribeKLine();
   }
 
   subscribeKLine() {
@@ -59,7 +90,7 @@ export default class App extends Component {
       ws.send(
         JSON.stringify({
           op: 'subscribe',
-          args: [{channel: 'candle1m', instId: 'BTC-USDT'}],
+          args: [{ channel: 'candle1m', instId: 'BTC-USDT' }],
         }),
       );
     };
@@ -79,7 +110,7 @@ export default class App extends Component {
             vol: Number(item[5]),
           },
         ]);
-      } catch (err) {}
+      } catch (err) { }
     };
   }
 
@@ -91,14 +122,21 @@ export default class App extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.welcome}>☆ByronKline example☆</Text>
-        <Text style={styles.instructions}>STATUS: loaded</Text>
+        <Text style={styles.instructions}>STATUS: {this.state.status}</Text>
         <Text style={styles.welcome}>☆☆☆</Text>
         <ByronKlineChart
-          style={{flex: 1}}
+          style={{ width: '100%', height: 400 }}
           datas={this.state.list}
-          onMoreKLineData={this.onMoreKLineData}
-          indicators={[KLineIndicator.MainMA]}
-          // mainBackgroundColor={'#ffffff'}
+          pricePrecision={9}
+          // mainBackgroundColor={'#FF0000'}
+          // onMoreKLineData={this.onMoreKLineData}
+          indicators={[KLineIndicator.MainMA, KLineIndicator.TimeLineHide]}
+          ma1Color={"#E8AF04"}
+          ma2Color={"#D5319B"}
+          ma3Color={"#594fBA"}
+          increaseColor={"#FF3A5A"}
+          decreaseColor={"#00C07B"}
+        // mainBackgroundColor={'#ffffff'}
         />
       </SafeAreaView>
     );

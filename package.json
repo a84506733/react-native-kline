@@ -1,12 +1,13 @@
 {
   "name": "react-native-kline",
   "title": "React Native Kline",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "React Native Kline",
   "main": "index.js",
   "files": [
     "README.md",
     "android",
+    "src",
     "index.js",
     "index.d.ts",
     "ios",
@@ -14,6 +15,19 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "codegenConfig": {
+    "name": "RNKlineSpec",
+    "type": "components",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.byron.kline"
+    },
+    "ios": {
+      "componentProvider": {
+        "ByronKline": "RNKlineComponentView"
+      }
+    }
   },
   "repository": {
     "type": "git",
@@ -31,8 +45,8 @@
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": "^17 || ^18",
-    "react-native": ">=0.60.0"
+    "react": "*",
+    "react-native": ">=0.76.0"
   },
   "devDependencies": {
     "react": "*",

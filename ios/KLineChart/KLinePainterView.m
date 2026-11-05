@@ -372,36 +372,29 @@
 }
 -(void)drawMaxAndMin:(CGContextRef)context {
     if(_isLine) { return; }
-    NSNumber *fixedPrice = [KLineStateManager manager].pricePrecision;
-    NSString *maxFixedPrice = [NSString stringWithFormat:@"%@%@f", @"——%.", fixedPrice];
-    NSString *minFixedPrice = [NSString stringWithFormat:@"%@%@f", @"%.", fixedPrice];
-    [minFixedPrice stringByAppendingString:@"——"];
     CGFloat itemWidth = self.candleWidth + ChartStyle_canldeMargin;
     CGFloat y1 = [self.mainRenderer getY:_mMainHighMaxValue];
     CGFloat x1 = self.frame.size.width - ((self.mMainMaxIndex - self.startIndex) * itemWidth + self.startX + self.candleWidth / 2);
+    // 低价格币种与右侧实时价/MA图例保持一致的紧凑格式（0.0000033 -> 0.0{5}33）
     if(x1 < self.frame.size.width / 2) {
-        NSString *text = [NSString stringWithFormat:maxFixedPrice,_mMainHighMaxValue];
+        NSString *text = [NSString stringWithFormat:@"——%@", [DataUtil formatDecimal:[NSNumber numberWithFloat:_mMainHighMaxValue]]];
         CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-//        [self.mainRenderer drawText:text atPoint:CGPointMake(x1, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
         [self.mainRenderer drawText:text atPoint:CGPointMake(x1, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor];
     } else {
-        NSString *text = [NSString stringWithFormat:minFixedPrice,_mMainHighMaxValue];
-       CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-//       [self.mainRenderer drawText:text atPoint:CGPointMake(x1 - rect.size.width, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+        NSString *text = [NSString stringWithFormat:@"%@——", [DataUtil formatDecimal:[NSNumber numberWithFloat:_mMainHighMaxValue]]];
+        CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
         [self.mainRenderer drawText:text atPoint:CGPointMake(x1 - rect.size.width, y1 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor];
     }
-    
+
     CGFloat y2 = [self.mainRenderer getY:_mMainLowMinValue];
     CGFloat x2 = self.frame.size.width - ((self.mMainMinIndex - self.startIndex) * itemWidth + self.startX + self.candleWidth / 2);
     if(x2 < self.frame.size.width / 2) {
-        NSString *text = [NSString stringWithFormat:maxFixedPrice,_mMainLowMinValue];
+        NSString *text = [NSString stringWithFormat:@"——%@", [DataUtil formatDecimal:[NSNumber numberWithFloat:_mMainLowMinValue]]];
         CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-//        [self.mainRenderer drawText:text atPoint:CGPointMake(x2, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
         [self.mainRenderer drawText:text atPoint:CGPointMake(x2, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor ];
     } else {
-        NSString *text = [NSString stringWithFormat:minFixedPrice,_mMainLowMinValue];
-       CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
-//       [self.mainRenderer drawText:text atPoint:CGPointMake(x2 - rect.size.width, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[UIColor whiteColor]];
+        NSString *text = [NSString stringWithFormat:@"%@——", [DataUtil formatDecimal:[NSNumber numberWithFloat:_mMainLowMinValue]]];
+        CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
         [self.mainRenderer drawText:text atPoint:CGPointMake(x2 - rect.size.width, y2 - rect.size.height / 2) fontSize:ChartStyle_defaultTextSize textColor:[KLineStateManager manager].limitTextColor];
     }
 }
