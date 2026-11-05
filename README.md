@@ -148,9 +148,9 @@ npm run ios
 | rsi1Color | string | 设置RSI1颜色  | Android  |
 | rsi2Color | string | 设置RSI2颜色 | Android  |
 | ris3Color | string | 设置RSI3颜色   | Android  |
-| ma1Color | string | 设置MA1颜色 |  Android |
-| ma2Color | string | 设置MA2颜色  |  Android |
-| ma3Color | string | 设置MA3颜色  |  Android |
+| ma1Color | string | 设置MA1颜色 |  Android iOS |
+| ma2Color | string | 设置MA2颜色  |  Android iOS |
+| ma3Color | string | 设置MA3颜色  |  Android iOS |
 | volMa1Color | string | 设置交易量MA1颜色  | Android  |
 | volMa2Color | string | 设置交易量MA2颜色  | Android  |
 | volLegendColor | string |  交易量图例颜色 | Android  |
