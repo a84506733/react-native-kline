@@ -9,8 +9,8 @@
 _仓库Android源码来源于[icechao/KlineChart](https://github.com/icechao/KlineChart). iOS源码来源于[h-js/KLine](https://github.com/h-js/KLine)_
 
 
-<img src="https://github.com/a84506733/react-native-kline/tree/NewArchitecture/screenshots/ios.png?raw=true" width="320">
-<img src="https://github.com/a84506733/react-native-kline/tree/NewArchitecture/screenshots/android.png?raw=true" width="320">
+<img src="screenshots/ios.png" width="320">
+<img src="screenshots/android.png" width="320">
 
 ## Install
 
