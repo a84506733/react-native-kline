@@ -9,8 +9,10 @@
 _仓库Android源码来源于[icechao/KlineChart](https://github.com/icechao/KlineChart). iOS源码来源于[h-js/KLine](https://github.com/h-js/KLine)_
 
 
-<img src="screenshots/ios.png" width="320">
-<img src="screenshots/android.png" width="320">
+<p align="center">
+  <img src="screenshots/ios.png" width="320">
+  <img src="screenshots/android.png" width="320">
+</p>
 
 ## Install
 
