@@ -126,7 +126,7 @@ npm run ios
 | lineWidth | number | 全局通用线宽  | Android  |
 | candleWidth | number | 设置每根蜡烛图宽度  |  Android |
 | candleLineWidth | number |   设置蜡烛线画笔宽(空心时的线宽) | Android  |
-| limitTextColor | string | 设置主视图最大/最小值文字颜色 | Android  |
+| limitTextColor | string | 设置主视图最大/最小值文字颜色 | Android iOS  |
 | candleHollow | `` CandleHollow `` | 蜡烛是否空心  | Android  |
 | gridLineWidth | number |  设置背景网格线宽 |  Android |
 | gridLineColor | string |  设置背景网格线颜色 | Android  |
