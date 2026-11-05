@@ -45,7 +45,7 @@ export default class App extends Component {
           open: Number(item[1]),
           close: Number(item[4]),
           high: Number(item[2]),
-          id: parseInt(Number(item[0]) / 1000),
+          id: parseInt(Number(item[0]) / 1000).toFixed(0),
           low: Number(item[3]),
           vol: Number(item[5]),
         });
@@ -73,7 +73,7 @@ export default class App extends Component {
           open: Number(item[5]),
           close: Number(item[2]),
           high: Number(item[3]),
-          id: Number(item[0]),
+          id: Number(item[0]).toFixed(0),
           low: Number(item[4]),
           vol: Number(item[6]),
         });
@@ -105,7 +105,7 @@ export default class App extends Component {
             open: Number(item[1]),
             close: Number(item[4]),
             high: Number(item[2]),
-            id: parseInt(Number(item[0]) / 1000),
+            id: parseInt(Number(item[0]) / 1000).toFixed(0),
             low: Number(item[3]),
             vol: Number(item[5]),
           },
@@ -130,13 +130,15 @@ export default class App extends Component {
           pricePrecision={9}
           // mainBackgroundColor={'#FF0000'}
           // onMoreKLineData={this.onMoreKLineData}
-          indicators={[KLineIndicator.MainMA, KLineIndicator.TimeLineHide]}
+          indicators={[KLineIndicator.MainMA, KLineIndicator.ChildMACD, KLineIndicator.TimeLineHide]}
           ma1Color={"#E8AF04"}
           ma2Color={"#D5319B"}
           ma3Color={"#594fBA"}
           increaseColor={"#FF3A5A"}
           decreaseColor={"#00C07B"}
-        // mainBackgroundColor={'#ffffff'}
+          limitTextColor={'#999999'}
+          locales={["Time", "Open", "High", "Low", "Close", "Change", "Chg", "Volume"]}
+        mainBackgroundColor={'#ffffff'}
         />
       </SafeAreaView>
     );

@@ -7,6 +7,7 @@
 //
 
 #import "DataUtil.h"
+#import "KLineStateManager.h"
 
 
 @implementation DataUtil
@@ -347,7 +348,15 @@
     if ([num isKindOfClass:[NSString class]]) {
         temp = (NSString *)num;
     } else if ([num isKindOfClass:[NSNumber class]]) {
-        temp = [self toNumberString:num];
+        // 与 Android 管线对齐：先按 pricePrecision 定点四舍五入
+        // （Android: String.format("%." + pricePrecision + "f", value)），
+        // 再做紧凑化。舍入 vs 不舍入会让边界值（如 0.0000019996）在两端
+        // 显示分叉（0.0{5}2000 vs 0.0{5}1999）；NSNumberFormatter 的
+        // DecimalStyle 还会带千位分隔符，也与 Android 不一致。
+        NSNumber *precision = [KLineStateManager manager].pricePrecision;
+        NSInteger digits = (precision != nil && precision.integerValue > 0)
+            ? precision.integerValue : 2;
+        temp = [NSString stringWithFormat:@"%.*f", (int)digits, [num doubleValue]];
     } else {
         // 处理其他类型，如果需要的话
         temp = [NSString stringWithFormat:@"%@", num];
