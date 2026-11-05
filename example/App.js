@@ -130,7 +130,7 @@ export default class App extends Component {
           pricePrecision={9}
           // mainBackgroundColor={'#FF0000'}
           // onMoreKLineData={this.onMoreKLineData}
-          indicators={[KLineIndicator.MainMA, KLineIndicator.ChildMACD, KLineIndicator.TimeLineHide]}
+          indicators={[KLineIndicator.MainMA, KLineIndicator.ChildWR,KLineIndicator.ChildKDJ]}
           ma1Color={"#E8AF04"}
           ma2Color={"#D5319B"}
           ma3Color={"#594fBA"}

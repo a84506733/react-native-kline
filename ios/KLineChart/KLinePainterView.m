@@ -69,7 +69,7 @@
 }
 -(void)setScaleX:(CGFloat)scaleX {
     _scaleX = scaleX;
-    self.candleWidth = scaleX * ChartStyle_candleWidth;
+    self.candleWidth = scaleX * RNKLFloat(candleWidth, ChartStyle_candleWidth);
     [self setNeedsDisplay];
 }
 - (void)setIsLongPress:(BOOL)isLongPress {
@@ -116,13 +116,13 @@
         self.isLongPress = isLongPress;
         self.mainState = mainState;
         self.secondaryState = secondaryState;
-        self.candleWidth = ChartStyle_candleWidth * self.scaleX;
+        self.candleWidth = RNKLFloat(candleWidth, ChartStyle_candleWidth) * self.scaleX;
     }
     return self;
 }
 
 - (void)drawRect:(CGRect)rect {
-    _displayHeight = rect.size.height - ChartStyle_topPadding - ChartStyle_bottomDateHigh;
+    _displayHeight = rect.size.height - RNKLFloat(topPadding, ChartStyle_topPadding) - RNKLFloat(bottomDateHigh, ChartStyle_bottomDateHigh);
     CGContextRef context = UIGraphicsGetCurrentContext();
     if(context != NULL) {
         [self divisionRect];
@@ -154,9 +154,9 @@
     } else if (_volState == VolStateNONE || _secondaryState == SecondaryStateNONE) {
         mainHeight = self.displayHeight * 0.8;
     }
-    self.mainRect = CGRectMake(0, ChartStyle_topPadding, self.frame.size.width, mainHeight);
+    self.mainRect = CGRectMake(0, RNKLFloat(topPadding, ChartStyle_topPadding), self.frame.size.width, mainHeight);
     if(_direction == KLineDirectionHorizontal) {
-        self.dateRect = CGRectMake(0, CGRectGetMaxY(_mainRect), self.frame.size.width, ChartStyle_bottomDateHigh);
+        self.dateRect = CGRectMake(0, CGRectGetMaxY(_mainRect), self.frame.size.width, RNKLFloat(bottomDateHigh, ChartStyle_bottomDateHigh));
         if(_volState != VolStateNONE) {
             self.volRect = CGRectMake(0, CGRectGetMaxY(_dateRect), self.frame.size.width, volHeigt);
         }
@@ -173,7 +173,7 @@
             CGFloat y =  CGRectGetMaxY(_volRect);
             self.secondaryRect = CGRectMake(0, y, self.frame.size.width, secondaryHeight);
         }
-        self.dateRect = CGRectMake(0,  self.displayHeight + ChartStyle_topPadding, self.frame.size.width, ChartStyle_bottomDateHigh);
+        self.dateRect = CGRectMake(0,  self.displayHeight + RNKLFloat(topPadding, ChartStyle_topPadding), self.frame.size.width, RNKLFloat(bottomDateHigh, ChartStyle_bottomDateHigh));
     }
 }
 
@@ -294,14 +294,14 @@
 }
 
 -(void)initRenderer {
-    _mainRenderer = [[MainChartRenderer alloc] initWithMaxValue:_mMainMaxValue minValue:_mMainMinValue chartRect:_mainRect candleWidth:_candleWidth topPadding:ChartStyle_topPadding isLine:_isLine state:_mainState];
+    _mainRenderer = [[MainChartRenderer alloc] initWithMaxValue:_mMainMaxValue minValue:_mMainMinValue chartRect:_mainRect candleWidth:_candleWidth topPadding:RNKLFloat(topPadding, ChartStyle_topPadding) isLine:_isLine state:_mainState];
     if(_volState != VolStateNONE) {
-        _volRenderer = [[VolChartRenderer alloc] initWithMaxValue:_mVolMaxValue minValue:_mVolMinValue chartRect:_volRect candleWidth:_candleWidth topPadding:ChartStyle_childPadding];
+        _volRenderer = [[VolChartRenderer alloc] initWithMaxValue:_mVolMaxValue minValue:_mVolMinValue chartRect:_volRect candleWidth:_candleWidth topPadding:RNKLFloat(childPaddingTop, ChartStyle_childPadding)];
     } else {
       _volRenderer = nil;
     }
     if(_secondaryState != SecondaryStateNONE) {
-        _seconderyRender = [[SecondaryChartRenderer alloc] initWithMaxValue:_mSecondaryMaxValue minValue:_mSecondaryMinValue chartRect:_secondaryRect candleWidth:_candleWidth topPadding:ChartStyle_childPadding state:_secondaryState];
+        _seconderyRender = [[SecondaryChartRenderer alloc] initWithMaxValue:_mSecondaryMaxValue minValue:_mSecondaryMinValue chartRect:_secondaryRect candleWidth:_candleWidth topPadding:RNKLFloat(childPaddingTop, ChartStyle_childPadding) state:_secondaryState];
     } else {
       _seconderyRender = nil;
     }
@@ -319,12 +319,12 @@
       }
 }
 -(void)drawGrid:(CGContextRef)context {
-    [_mainRenderer drawGrid:context gridRows:ChartStyle_gridRows gridColums:ChartStyle_gridColumns];
+    [_mainRenderer drawGrid:context gridRows:RNKLFloat(gridRows, ChartStyle_gridRows) gridColums:RNKLFloat(gridColumns, ChartStyle_gridColumns)];
    if(_volRenderer != nil) {
-       [_volRenderer drawGrid:context gridRows:ChartStyle_gridRows gridColums:ChartStyle_gridColumns];
+       [_volRenderer drawGrid:context gridRows:RNKLFloat(gridRows, ChartStyle_gridRows) gridColums:RNKLFloat(gridColumns, ChartStyle_gridColumns)];
    }
    if(_seconderyRender != nil) {
-       [_seconderyRender drawGrid:context gridRows:ChartStyle_gridRows gridColums:ChartStyle_gridColumns];
+       [_seconderyRender drawGrid:context gridRows:RNKLFloat(gridRows, ChartStyle_gridRows) gridColums:RNKLFloat(gridColumns, ChartStyle_gridColumns)];
    }
      CGContextSetLineWidth(context, 1);
     CGContextAddRect(context, self.bounds);
@@ -366,8 +366,8 @@
         KLineModel *data = self.datas[index];
         NSString *dataStr = [self calculateDateText:data.id];
         CGRect rect = [dataStr getRectWithFontSize:ChartStyle_bottomDatefontSize];
-        CGFloat y = CGRectGetMinY(self.dateRect) + (ChartStyle_bottomDateHigh - rect.size.height) / 2;
-        [self.mainRenderer drawText:dataStr atPoint:CGPointMake(cloumSpace * i - rect.size.width / 2, y) fontSize:ChartStyle_bottomDatefontSize textColor:ChartColors_bottomDateTextColor];
+        CGFloat y = CGRectGetMinY(self.dateRect) + (RNKLFloat(bottomDateHigh, ChartStyle_bottomDateHigh) - rect.size.height) / 2;
+        [self.mainRenderer drawText:dataStr atPoint:CGPointMake(cloumSpace * i - rect.size.width / 2, y) fontSize:RNKLFloat(axisTextSize, ChartStyle_bottomDatefontSize) textColor:RNKLColor(axisTextColor, ChartColors_bottomDateTextColor)];
     }
 }
 -(void)drawMaxAndMin:(CGContextRef)context {
@@ -405,7 +405,7 @@
     CGFloat itemWidth = _candleWidth + ChartStyle_canldeMargin;
     CGFloat curX = self.frame.size.width - ((index - self.startIndex) * itemWidth + self.startX + self.candleWidth / 2);
     CGContextSetStrokeColorWithColor(context, ChartColors_crossHlineColor.CGColor);
-    CGContextSetLineWidth(context, _candleWidth);
+    CGContextSetLineWidth(context, RNKLFloat(selectedYLineWidth, _candleWidth));
     CGContextMoveToPoint(context, curX, 0);
     CGContextAddLineToPoint(context, curX, self.frame.size.height);
     CGContextDrawPath(context, kCGPathStroke);
@@ -413,13 +413,13 @@
     CGFloat y = [self.mainRenderer getY:point.close];
     
     CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
-    CGContextSetLineWidth(context, 0.5);
+    CGContextSetLineWidth(context, RNKLFloat(selectedXLineWidth, 0.5));
     CGContextMoveToPoint(context, 0, y);
     CGContextAddLineToPoint(context, self.frame.size.width, y);
     CGContextDrawPath(context, kCGPathStroke);
     
     CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
-    CGContextAddArc(context, curX, y, 2, 0, M_PI_2, true);
+    CGContextAddArc(context, curX, y, RNKLFloat(selectedCrossPointRadius, 2), 0, M_PI_2, true);
     CGContextDrawPath(context, kCGPathFill);
     [self drawLongPressCrossLineText:context curPoint:point curX:curX y:y];
 }
@@ -501,8 +501,8 @@
     }
     if((-_scrollX - rect.size.width) > 0) {
         CGContextSetStrokeColorWithColor(context, ChartColors_realTimeLongLineColor.CGColor);
-        CGContextSetLineWidth(context, 0.5);
-        CGFloat locations[] = {5,5};
+        CGContextSetLineWidth(context, RNKLFloat(priceLineWidth, 0.5));
+        CGFloat locations[] = {RNKLFloat(priceLineDotSolidWidth,5),RNKLFloat(priceLineDotStrokeWidth,5)};
         CGContextSetLineDash(context, 0, locations, 2);
         CGContextMoveToPoint(context,self.frame.size.width + _scrollX, y);
         CGContextAddLineToPoint(context, self.frame.size.width, y);
@@ -510,10 +510,10 @@
         CGContextAddRect(context, CGRectMake(self.frame.size.width - rect.size.width, y - rect.size.height / 2, rect.size.width, rect.size.height));
         CGContextSetFillColorWithColor(context, [UIColor colorWithHexString:_mainBackgroundColor].CGColor);
         CGContextDrawPath(context, kCGPathFill);
-        [self.mainRenderer drawText:text atPoint:CGPointMake(self.frame.size.width - rect.size.width, y - rect.size.height / 2) fontSize:fontSize textColor:ChartColors_reightTextColor];
+        [self.mainRenderer drawText:text atPoint:CGPointMake(self.frame.size.width - rect.size.width, y - rect.size.height / 2) fontSize:fontSize textColor:RNKLColor(axisTextColor, ChartColors_reightTextColor)];
         if(_isLine) {
-            CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
-            CGContextAddArc(context, self.frame.size.width + _scrollX - _candleWidth / 2, y, 2, 0, M_PI_2, true);
+            CGContextSetFillColorWithColor(context, RNKLColor(timeLineEndPointColor, [UIColor whiteColor]).CGColor);
+            CGContextAddArc(context, self.frame.size.width + _scrollX - _candleWidth / 2, y, RNKLFloat(timeLineEndRadius, 2), 0, M_PI_2, true);
             CGContextDrawPath(context, kCGPathFill);
         }
     } else {
@@ -552,13 +552,13 @@
         CGContextDrawPath(context, kCGPathFillStroke);
         
         CGFloat startX = CGRectGetMaxX(arcRect) - 4;
-        CGContextSetFillColorWithColor(context, ChartColors_reightTextColor.CGColor);
+        CGContextSetFillColorWithColor(context, RNKLColor(axisTextColor, ChartColors_reightTextColor).CGColor);
         CGContextMoveToPoint(context,startX, y);
         CGContextAddLineToPoint(context, startX - 3, y - 3);
         CGContextAddLineToPoint(context, startX - 3, y + 3);
         CGContextClosePath(context);
         CGContextDrawPath(context, kCGPathFill);
-        [self.mainRenderer drawText:text atPoint:CGPointMake(curX - rect.size.width / 2 - 4, y - rect.size.height / 2) fontSize:fontSize textColor:ChartColors_reightTextColor];
+        [self.mainRenderer drawText:text atPoint:CGPointMake(curX - rect.size.width / 2 - 4, y - rect.size.height / 2) fontSize:fontSize textColor:RNKLColor(axisTextColor, ChartColors_reightTextColor)];
     }
     
     

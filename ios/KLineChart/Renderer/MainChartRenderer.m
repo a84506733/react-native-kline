@@ -50,8 +50,8 @@
     }
     CGFloat rowSpace = self.chartRect.size.height / (CGFloat)gridRows;
     for (int index = 0;  index < gridRows; index++) {
-         CGContextMoveToPoint(context, 0, index * rowSpace + ChartStyle_topPadding);
-         CGContextAddLineToPoint(context, CGRectGetMaxX(self.chartRect), index * rowSpace + ChartStyle_topPadding);
+         CGContextMoveToPoint(context, 0, index * rowSpace + RNKLFloat(topPadding, ChartStyle_topPadding));
+         CGContextAddLineToPoint(context, CGRectGetMaxX(self.chartRect), index * rowSpace + RNKLFloat(topPadding, ChartStyle_topPadding));
          CGContextDrawPath(context, kCGPathFillStroke);
      }
     CGContextAddRect(context, self.chartRect);
@@ -79,7 +79,7 @@
     CGFloat x2 = curX + self.candleWidth + ChartStyle_canldeMargin;
     CGFloat y2 = [self getY:lastValue];
     CGContextSetLineWidth(context, 1);
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithHexString:_mainBackgroundColor].CGColor);
+    CGContextSetStrokeColorWithColor(context, RNKLColor(timeLineColor, [UIColor colorWithHexString:_mainBackgroundColor]).CGColor);
     CGContextMoveToPoint(context, x1, y1);
     CGContextAddCurveToPoint(context, (x1 + x2) / 2.0, y1,  (x1 + x2) / 2.0, y2, x2, y2);
     CGContextDrawPath(context, kCGPathFillStroke);
@@ -95,7 +95,7 @@
     CGContextClip(context);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGFloat locations[] = {0,1};
-    NSArray *colors = @[(__bridge id)[UIColor rgb_r:0x4c g:0x86 b:0xCD alpha:1].CGColor, (__bridge id)[UIColor rgb_r:0x00 g:0x00 b:0x00 alpha:0].CGColor];
+    NSArray *colors = @[(__bridge id)RNKLColor(timeLineFillTopColor, [UIColor rgb_r:0x4c g:0x86 b:0xCD alpha:1]).CGColor, (__bridge id)RNKLColor(timeLineFillBottomColor, [UIColor rgb_r:0x00 g:0x00 b:0x00 alpha:0]).CGColor];
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef) colors, locations);
     CGColorSpaceRelease(colorSpace);
     CGPoint start = CGPointMake((x1 + x2) / 2, CGRectGetMinY(self.chartRect));
@@ -147,7 +147,7 @@
     }
     
     CGContextSetStrokeColorWithColor(context, color.CGColor);
-    CGContextSetLineWidth(context, ChartStyle_candleLineWidth);
+    CGContextSetLineWidth(context, RNKLFloat(candleLineWidth, ChartStyle_candleLineWidth));
     CGContextMoveToPoint(context, curX, high);
     CGContextAddLineToPoint(context, curX, low);
     CGContextDrawPath(context, kCGPathFillStroke);
@@ -170,7 +170,7 @@
         NSString *str = [NSString stringWithFormat:@"%@%@", @"MA5:",  [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA5Price]]];
 
 
-        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma1Color }];
+        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:RNKLFloat(defaultTextSize, ChartStyle_defaultTextSize)],NSForegroundColorAttributeName: [KLineStateManager manager].ma1Color }];
         [topAttributeText appendAttributedString:attr];
     }
     if(curPoint.MA10Price != 0) {
@@ -179,7 +179,7 @@
 //        NSString *str = [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA10Price]];
         NSString *str = [NSString stringWithFormat:@"%@%@", @"MA10:",  [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA10Price]]];
 
-        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma2Color}];
+        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:RNKLFloat(defaultTextSize, ChartStyle_defaultTextSize)],NSForegroundColorAttributeName: [KLineStateManager manager].ma2Color}];
         [topAttributeText appendAttributedString:attr];
     }
     if(curPoint.MA30Price != 0) {
@@ -187,10 +187,10 @@
 //        NSString *str = [NSString stringWithFormat:fixedStr,curPoint.MA30Price];
         NSString *str = [NSString stringWithFormat:@"%@%@", @"MA30:",  [DataUtil  formatDecimal:[NSNumber numberWithFloat:curPoint.MA30Price]]];
         
-        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma3Color}];
+        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:[str stringByAppendingString:@"    "] attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:RNKLFloat(defaultTextSize, ChartStyle_defaultTextSize)],NSForegroundColorAttributeName: [KLineStateManager manager].ma3Color}];
         [topAttributeText appendAttributedString:attr];
     }
-    [topAttributeText drawAtPoint:CGPointMake(5, 6)];
+    [topAttributeText drawAtPoint:CGPointMake(RNKLFloat(legendMarginLeft, 5), RNKLFloat(mainLegendMarginTop, 6))];
 }
 
 - (void)drawRightText:(CGContextRef)context gridRows:(NSUInteger)gridRows gridColums:(NSUInteger)gridColums {
@@ -210,7 +210,7 @@
         } else {
             y = [self getY:value] - rect.size.height;
         }
-        [self drawText:valueStr atPoint:CGPointMake(self.chartRect.size.width - rect.size.width, y) fontSize:ChartStyle_reightTextSize textColor:ChartColors_reightTextColor];
+        [self drawText:valueStr atPoint:CGPointMake(self.chartRect.size.width - rect.size.width, y) fontSize:RNKLFloat(axisTextSize, ChartStyle_reightTextSize) textColor:RNKLColor(axisTextColor, ChartColors_reightTextColor)];
     }
 }
 

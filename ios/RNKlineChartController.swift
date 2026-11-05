@@ -80,6 +80,67 @@ public final class RNKlineChartController: UIView, KLineDelegate {
     }
   }
 
+  // MARK: - Style props (parity with the Android implementation; applied via the
+  // KLineStateManager singleton so every renderer picks them up on next draw)
+  @objc public var gridLineColor: String? { didSet { applyColor(\.gridLineColor, gridLineColor) } }
+  @objc public var macdIncreaseColor: String? { didSet { applyColor(\.macdIncreaseColor, macdIncreaseColor) } }
+  @objc public var macdDecreaseColor: String? { didSet { applyColor(\.macdDecreaseColor, macdDecreaseColor) } }
+  @objc public var macdColor: String? { didSet { applyColor(\.macdColor, macdColor) } }
+  @objc public var difColor: String? { didSet { applyColor(\.difColor, difColor) } }
+  @objc public var deaColor: String? { didSet { applyColor(\.deaColor, deaColor) } }
+  @objc public var kColor: String? { didSet { applyColor(\.kColor, kColor) } }
+  @objc public var dColor: String? { didSet { applyColor(\.dColor, dColor) } }
+  @objc public var jColor: String? { didSet { applyColor(\.jColor, jColor) } }
+  @objc public var volMa1Color: String? { didSet { applyColor(\.volMa1Color, volMa1Color) } }
+  @objc public var volMa2Color: String? { didSet { applyColor(\.volMa2Color, volMa2Color) } }
+  @objc public var volLegendColor: String? { didSet { applyColor(\.volLegendColor, volLegendColor) } }
+  @objc public var timeLineColor: String? { didSet { applyColor(\.timeLineColor, timeLineColor) } }
+  @objc public var timeLineFillTopColor: String? { didSet { applyColor(\.timeLineFillTopColor, timeLineFillTopColor) } }
+  @objc public var timeLineFillBottomColor: String? { didSet { applyColor(\.timeLineFillBottomColor, timeLineFillBottomColor) } }
+  @objc public var timeLineEndPointColor: String? { didSet { applyColor(\.timeLineEndPointColor, timeLineEndPointColor) } }
+  @objc public var backgroundFillTopColor: String? { didSet { applyColor(\.backgroundFillTopColor, backgroundFillTopColor) } }
+  @objc public var backgroundFillBottomColor: String? { didSet { applyColor(\.backgroundFillBottomColor, backgroundFillBottomColor) } }
+  @objc public var labelTextColor: String? { didSet { applyColor(\.axisTextColor, labelTextColor) } }
+  @objc public var commonTextColor: String? { didSet { applyColor(\.axisTextColor, commonTextColor) } }
+  @objc public var rsi1Color: String? { didSet { applyColor(\.rsiColor, rsi1Color) } }
+  @objc public var wr1Color: String? { didSet { applyColor(\.wrColor, wr1Color) } }
+  @objc public var candleWidth: NSNumber? { didSet { applyFloat(\.candleWidth, candleWidth) } }
+  @objc public var candleLineWidth: NSNumber? { didSet { applyFloat(\.candleLineWidth, candleLineWidth) } }
+  @objc public var gridLineWidth: NSNumber? { didSet { applyFloat(\.gridLineWidth, gridLineWidth) } }
+  @objc public var gridLineRows: NSNumber? { didSet { applyFloat(\.gridRows, gridLineRows) } }
+  @objc public var gridLineColumns: NSNumber? { didSet { applyFloat(\.gridColumns, gridLineColumns) } }
+  @objc public var mainMarginTop: NSNumber? { didSet { applyFloat(\.topPadding, mainMarginTop) } }
+  @objc public var paddingBottom: NSNumber? { didSet { applyFloat(\.bottomDateHigh, paddingBottom) } }
+  @objc public var childPaddingTop: NSNumber? { didSet { applyFloat(\.childPaddingTop, childPaddingTop) } }
+  @objc public var labelTextSize: NSNumber? { didSet { applyFloat(\.axisTextSize, labelTextSize) } }
+  @objc public var priceLineWidth: NSNumber? { didSet { applyFloat(\.priceLineWidth, priceLineWidth) } }
+  @objc public var priceLineDotSolidWidth: NSNumber? { didSet { applyFloat(\.priceLineDotSolidWidth, priceLineDotSolidWidth) } }
+  @objc public var priceLineDotStrokeWidth: NSNumber? { didSet { applyFloat(\.priceLineDotStrokeWidth, priceLineDotStrokeWidth) } }
+  @objc public var selectedXLineWidth: NSNumber? { didSet { applyFloat(\.selectedXLineWidth, selectedXLineWidth) } }
+  @objc public var selectedYLineWidth: NSNumber? { didSet { applyFloat(\.selectedYLineWidth, selectedYLineWidth) } }
+  @objc public var selectedCrossPointRadius: NSNumber? { didSet { applyFloat(\.selectedCrossPointRadius, selectedCrossPointRadius) } }
+  @objc public var timeLineEndRadius: NSNumber? { didSet { applyFloat(\.timeLineEndRadius, timeLineEndRadius) } }
+  @objc public var legendMarginLeft: NSNumber? { didSet { applyFloat(\.legendMarginLeft, legendMarginLeft) } }
+  @objc public var mainLegendMarginTop: NSNumber? { didSet { applyFloat(\.mainLegendMarginTop, mainLegendMarginTop) } }
+  @objc public var volLegendMarginTop: NSNumber? { didSet { applyFloat(\.volLegendMarginTop, volLegendMarginTop) } }
+  @objc public var macdWidth: NSNumber? { didSet { applyFloat(\.macdBarWidth, macdWidth) } }
+  @objc public var commonTextSize: NSNumber? {
+    didSet {
+      KLineStateManager().defaultTextSize = commonTextSize
+      KLineStateManager().axisTextSize = commonTextSize
+      chartView?.setNeedsDisplay()
+    }
+  }
+
+  private func applyColor(_ keyPath: ReferenceWritableKeyPath<KLineStateManager, UIColor?>, _ hex: String?) {
+    KLineStateManager()[keyPath: keyPath] = hex.flatMap { UIColor(hexString: $0) }
+    chartView?.setNeedsDisplay()
+  }
+
+  private func applyFloat(_ keyPath: ReferenceWritableKeyPath<KLineStateManager, NSNumber?>, _ value: NSNumber?) {
+    KLineStateManager()[keyPath: keyPath] = value
+    chartView?.setNeedsDisplay()
+  }
   // MARK: - Chart setup
 
   @objc public func initChartView() {

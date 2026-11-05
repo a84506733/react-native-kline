@@ -80,6 +80,28 @@ bool RNKLArraysEqual(const std::vector<ByronKlineDatasStruct> &a,
   RNKL_STR(ma2Color)
   RNKL_STR(ma3Color)
   RNKL_STR(limitTextColor)
+  RNKL_STR(gridLineColor)
+  RNKL_STR(labelTextColor)
+  RNKL_STR(commonTextColor)
+  RNKL_STR(macdIncreaseColor)
+  RNKL_STR(macdDecreaseColor)
+  RNKL_STR(macdColor)
+  RNKL_STR(difColor)
+  RNKL_STR(deaColor)
+  RNKL_STR(kColor)
+  RNKL_STR(dColor)
+  RNKL_STR(jColor)
+  RNKL_STR(rsi1Color)
+  RNKL_STR(wr1Color)
+  RNKL_STR(volMa1Color)
+  RNKL_STR(volMa2Color)
+  RNKL_STR(volLegendColor)
+  RNKL_STR(timeLineColor)
+  RNKL_STR(timeLineFillTopColor)
+  RNKL_STR(timeLineFillBottomColor)
+  RNKL_STR(timeLineEndPointColor)
+  RNKL_STR(backgroundFillTopColor)
+  RNKL_STR(backgroundFillBottomColor)
 
   if (oldViewProps.pricePrecision != newViewProps.pricePrecision) {
     _controller.pricePrecision = @(newViewProps.pricePrecision);
@@ -118,6 +140,70 @@ bool RNKLArraysEqual(const std::vector<ByronKlineDatasStruct> &a,
       [indicators addObject:@(item)];
     }
     [_controller setIndicators:indicators];
+  }
+
+  if (oldViewProps.candleWidth != newViewProps.candleWidth) {
+    _controller.candleWidth = @(newViewProps.candleWidth);
+  }
+  if (oldViewProps.candleLineWidth != newViewProps.candleLineWidth) {
+    _controller.candleLineWidth = @(newViewProps.candleLineWidth);
+  }
+  if (oldViewProps.gridLineWidth != newViewProps.gridLineWidth) {
+    _controller.gridLineWidth = @(newViewProps.gridLineWidth);
+  }
+  if (oldViewProps.gridLineRows != newViewProps.gridLineRows) {
+    _controller.gridLineRows = @(newViewProps.gridLineRows);
+  }
+  if (oldViewProps.gridLineColumns != newViewProps.gridLineColumns) {
+    _controller.gridLineColumns = @(newViewProps.gridLineColumns);
+  }
+  if (oldViewProps.macdWidth != newViewProps.macdWidth) {
+    _controller.macdWidth = @(newViewProps.macdWidth);
+  }
+  if (oldViewProps.mainMarginTop != newViewProps.mainMarginTop) {
+    _controller.mainMarginTop = @(newViewProps.mainMarginTop);
+  }
+  if (oldViewProps.paddingBottom != newViewProps.paddingBottom) {
+    _controller.paddingBottom = @(newViewProps.paddingBottom);
+  }
+  if (oldViewProps.childPaddingTop != newViewProps.childPaddingTop) {
+    _controller.childPaddingTop = @(newViewProps.childPaddingTop);
+  }
+  if (oldViewProps.labelTextSize != newViewProps.labelTextSize) {
+    _controller.labelTextSize = @(newViewProps.labelTextSize);
+  }
+  if (oldViewProps.commonTextSize != newViewProps.commonTextSize) {
+    _controller.commonTextSize = @(newViewProps.commonTextSize);
+  }
+  if (oldViewProps.priceLineWidth != newViewProps.priceLineWidth) {
+    _controller.priceLineWidth = @(newViewProps.priceLineWidth);
+  }
+  if (oldViewProps.priceLineDotSolidWidth != newViewProps.priceLineDotSolidWidth) {
+    _controller.priceLineDotSolidWidth = @(newViewProps.priceLineDotSolidWidth);
+  }
+  if (oldViewProps.priceLineDotStrokeWidth != newViewProps.priceLineDotStrokeWidth) {
+    _controller.priceLineDotStrokeWidth = @(newViewProps.priceLineDotStrokeWidth);
+  }
+  if (oldViewProps.selectedXLineWidth != newViewProps.selectedXLineWidth) {
+    _controller.selectedXLineWidth = @(newViewProps.selectedXLineWidth);
+  }
+  if (oldViewProps.selectedYLineWidth != newViewProps.selectedYLineWidth) {
+    _controller.selectedYLineWidth = @(newViewProps.selectedYLineWidth);
+  }
+  if (oldViewProps.selectedCrossPointRadius != newViewProps.selectedCrossPointRadius) {
+    _controller.selectedCrossPointRadius = @(newViewProps.selectedCrossPointRadius);
+  }
+  if (oldViewProps.timeLineEndRadius != newViewProps.timeLineEndRadius) {
+    _controller.timeLineEndRadius = @(newViewProps.timeLineEndRadius);
+  }
+  if (oldViewProps.legendMarginLeft != newViewProps.legendMarginLeft) {
+    _controller.legendMarginLeft = @(newViewProps.legendMarginLeft);
+  }
+  if (oldViewProps.mainLegendMarginTop != newViewProps.mainLegendMarginTop) {
+    _controller.mainLegendMarginTop = @(newViewProps.mainLegendMarginTop);
+  }
+  if (oldViewProps.volLegendMarginTop != newViewProps.volLegendMarginTop) {
+    _controller.volLegendMarginTop = @(newViewProps.volLegendMarginTop);
   }
 
   [super updateProps:props oldProps:oldProps];

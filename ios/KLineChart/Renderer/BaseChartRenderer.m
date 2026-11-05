@@ -52,7 +52,7 @@
     CGContextClipToRect(context, _chartRect);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGFloat locations[] = {0,1};
-    NSArray *colors = @[(__bridge id)[UIColor colorWithHexString:color].CGColor, (__bridge id)[UIColor colorWithHexString:color].CGColor];
+    NSArray *colors = @[(__bridge id)RNKLColor(backgroundFillTopColor, [UIColor colorWithHexString:color]).CGColor, (__bridge id)RNKLColor(backgroundFillBottomColor, [UIColor colorWithHexString:color]).CGColor];
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef) colors, locations);
     CGColorSpaceRelease(colorSpace);
     CGPoint start = CGPointMake(_chartRect.size.width / 2, CGRectGetMinY(_chartRect));

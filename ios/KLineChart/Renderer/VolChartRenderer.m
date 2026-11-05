@@ -14,7 +14,7 @@
 @implementation VolChartRenderer
 
 - (void)drawGrid:(CGContextRef)context gridRows:(NSUInteger)gridRows gridColums:(NSUInteger)gridColums {
-    CGContextSetStrokeColorWithColor(context, ChartColors_gridColor.CGColor);
+    CGContextSetStrokeColorWithColor(context, RNKLColor(gridLineColor, ChartColors_gridColor).CGColor);
     CGContextSetLineWidth(context, 0.5);
     CGFloat columsSpace = self.chartRect.size.width / (CGFloat)(gridColums);
     for (int index = 0;  index < gridColums; index++) {
@@ -30,10 +30,10 @@
     [self drawVolChat:context curPoint:curPoint curX:curX];
     if(lastPoint != nil){
         if(curPoint.MA5Volume != 0) {
-            [self drawLine:context lastValue:lastPoint.MA5Volume curValue:curPoint.MA5Volume curX:curX color:[KLineStateManager manager].ma1Color ];
+            [self drawLine:context lastValue:lastPoint.MA5Volume curValue:curPoint.MA5Volume curX:curX color:RNKLColor(volMa1Color, [KLineStateManager manager].ma1Color) ];
         }
         if(curPoint.MA10Volume != 0) {
-            [self drawLine:context lastValue:lastPoint.MA10Volume curValue:curPoint.MA10Volume curX:curX color:[KLineStateManager manager].ma2Color];
+            [self drawLine:context lastValue:lastPoint.MA10Volume curValue:curPoint.MA10Volume curX:curX color:RNKLColor(volMa2Color, [KLineStateManager manager].ma2Color)];
         }
     }
 }
@@ -55,26 +55,26 @@
     NSMutableAttributedString *topAttributeText = [[NSMutableAttributedString alloc] init];
     {
         NSString *str = [NSString stringWithFormat:@"VOL:%@   ", [self volFormat:curPoint.vol]];
-        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: ChartColors_volColor}];
+        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:RNKLFloat(defaultTextSize, ChartStyle_defaultTextSize)],NSForegroundColorAttributeName: RNKLColor(volLegendColor, ChartColors_volColor)}];
         [topAttributeText appendAttributedString:attr];
     }
     {
         NSString *str = [NSString stringWithFormat:@"MA5:%@    ", [self volFormat:curPoint.MA5Volume]];
-        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma1Color }];
+        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:RNKLFloat(defaultTextSize, ChartStyle_defaultTextSize)],NSForegroundColorAttributeName: [KLineStateManager manager].ma1Color }];
         [topAttributeText appendAttributedString:attr];
     }
    {
         NSString *str = [NSString stringWithFormat:@"MA10:%@   ",[self volFormat:curPoint.MA10Volume]];
-        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:ChartStyle_defaultTextSize],NSForegroundColorAttributeName: [KLineStateManager manager].ma2Color}];
+        NSAttributedString *attr = [[NSAttributedString alloc] initWithString:str attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:RNKLFloat(defaultTextSize, ChartStyle_defaultTextSize)],NSForegroundColorAttributeName: [KLineStateManager manager].ma2Color}];
         [topAttributeText appendAttributedString:attr];
     }
-    [topAttributeText drawAtPoint:CGPointMake(5, CGRectGetMinY(self.chartRect))];
+    [topAttributeText drawAtPoint:CGPointMake(RNKLFloat(legendMarginLeft, 5), CGRectGetMinY(self.chartRect) + RNKLFloat(volLegendMarginTop, 0))];
 }
 
 - (void)drawRightText:(CGContextRef)context gridRows:(NSUInteger)gridRows gridColums:(NSUInteger)gridColums {
     NSString *text = [self volFormat:self.maxValue];
     CGRect rect = [text getRectWithFontSize:ChartStyle_reightTextSize];
-    [self drawText:text atPoint:CGPointMake(self.chartRect.size.width - rect.size.width, CGRectGetMinY(self.chartRect)) fontSize:ChartStyle_reightTextSize textColor:ChartColors_reightTextColor];
+    [self drawText:text atPoint:CGPointMake(self.chartRect.size.width - rect.size.width, CGRectGetMinY(self.chartRect)) fontSize:RNKLFloat(axisTextSize, ChartStyle_reightTextSize) textColor:RNKLColor(axisTextColor, ChartColors_reightTextColor)];
 }
 
 @end
