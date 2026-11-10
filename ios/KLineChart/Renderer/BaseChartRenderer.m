@@ -9,6 +9,7 @@
 #import "BaseChartRenderer.h"
 #import "ChartStyle.h"
 #import "KLineStateManager.h"
+#import <math.h>
 
 
 @implementation BaseChartRenderer
@@ -21,12 +22,31 @@
 {
     self = [super init];
     if (self) {
+        // 所有纵坐标都来自 scaleY * (maxValue - value)。
+        // 一旦区间为 0（只有一个/全平的行情点）或边界是 NaN/Inf，
+        // scaleY 会变成 inf/NaN，getY 随后产生 NaN 并传给 CoreGraphics
+        // （"invalid numeric value" + "no current point"）。
+        // 在这里统一把区间修正成有限值，子类都受益。
+        if (!isfinite(maxValue)) { maxValue = 0; }
+        if (!isfinite(minValue)) { minValue = 0; }
+        CGFloat range = maxValue - minValue;
+        // 用相对 epsilon 判断平盘，避免把低币价（如 1e-8）的正常小区间误判为 0。
+        CGFloat epsilon = fabs(maxValue) > 0 ? fabs(maxValue) * 1e-9 : 1e-12;
+        if (!isfinite(range) || fabs(range) <= epsilon) {
+            CGFloat base = maxValue;
+            CGFloat padding = fabs(base) > 0 ? fabs(base) * 0.01 : 1.0;
+            maxValue = base + padding;
+            minValue = base - padding;
+            range = maxValue - minValue;
+        }
         self.maxValue = maxValue;
         self.minValue = minValue;
         self.chartRect = chartRect;
         self.candleWidth = candleWidth;
         self.topPadding = topPadding;
-        _scaleY = (chartRect.size.height - topPadding) / (maxValue - minValue);
+        _scaleY = (chartRect.size.height - topPadding) / range;
+        // 视图尺寸退化（高度恰为 topPadding）时仍可能得到 0/inf，最后兜底。
+        if (!isfinite(_scaleY) || _scaleY == 0) { _scaleY = 1; }
     }
     return self;
 }
@@ -91,7 +111,12 @@
 }
 
 -(CGFloat)getY:(CGFloat)value {
-    return _scaleY * (_maxValue - value) + CGRectGetMinY(_chartRect) + _topPadding;
+    CGFloat y = _scaleY * (_maxValue - value) + CGRectGetMinY(_chartRect) + _topPadding;
+    // 最后一道防线：绝不把 NaN/Inf 坐标交给 CoreGraphics。
+    if (!isfinite(y)) {
+        return CGRectGetMinY(_chartRect) + _topPadding;
+    }
+    return y;
 }
 
 -(NSString *)volFormat:(CGFloat)value {

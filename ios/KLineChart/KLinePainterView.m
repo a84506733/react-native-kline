@@ -14,6 +14,7 @@
 #import "NSString+Rect.h"
 #import "KLineStateManager.h"
 #import "DataUtil.h"
+#import <math.h>
 
 @interface KLinePainterView()
 @property(nonatomic,assign) CGFloat displayHeight;
@@ -69,7 +70,13 @@
 }
 -(void)setScaleX:(CGFloat)scaleX {
     _scaleX = scaleX;
-    self.candleWidth = scaleX * RNKLFloat(candleWidth, ChartStyle_candleWidth);
+    CGFloat baseWidth = RNKLFloat(candleWidth, ChartStyle_candleWidth);
+    self.candleWidth = scaleX * baseWidth;
+    // candleWidth / scaleX 也可能来自 prop（Double）；非有限值或非正值会让
+    // itemWidth/curX 全部变成 NaN，这里回退到安全宽度。
+    if (!isfinite(self.candleWidth) || self.candleWidth <= 0) {
+        self.candleWidth = (isfinite(baseWidth) && baseWidth > 0) ? baseWidth : ChartStyle_candleWidth;
+    }
     [self setNeedsDisplay];
 }
 - (void)setIsLongPress:(BOOL)isLongPress {
@@ -195,7 +202,17 @@
         self.startX = offsetX;
     }
     NSUInteger diffIndex = (NSUInteger)(ceil(self.frame.size.width - self.startX) / itemWidth);
-    _stopIndex = MIN(_startIndex + diffIndex, self.datas.count - 1);
+    // 数据变短 / 缩放后旧 scrollX 可能让 startIndex 越界；越界时下面的
+    // 循环一次都不跑，max/min 会停留在 ±CGFLOAT_MAX 哨兵值上，
+    // 后续 scaleY / getY 会因此溢出成 inf/NaN。
+    NSUInteger maxIndex = self.datas.count - 1;
+    if (_startIndex > maxIndex) {
+        _startIndex = maxIndex;
+    }
+    _stopIndex = MIN(_startIndex + diffIndex, maxIndex);
+    if (_stopIndex < _startIndex) {
+        _stopIndex = _startIndex;
+    }
     _mMainMaxValue = -CGFLOAT_MAX;
     _mMainMinValue = CGFLOAT_MAX;
     _mMainHighMaxValue = -CGFLOAT_MAX;
@@ -374,7 +391,9 @@
     if(_isLine) { return; }
     CGFloat itemWidth = self.candleWidth + ChartStyle_canldeMargin;
     CGFloat y1 = [self.mainRenderer getY:_mMainHighMaxValue];
-    CGFloat x1 = self.frame.size.width - ((self.mMainMaxIndex - self.startIndex) * itemWidth + self.startX + self.candleWidth / 2);
+    // 用有符号差值：startIndex 越界时无符号减法会下溢成天文数字坐标。
+    CGFloat highOffset = (CGFloat)((NSInteger)self.mMainMaxIndex - (NSInteger)self.startIndex);
+    CGFloat x1 = self.frame.size.width - (highOffset * itemWidth + self.startX + self.candleWidth / 2);
     // 低价格币种与右侧实时价/MA图例保持一致的紧凑格式（0.0000033 -> 0.0{5}33）
     if(x1 < self.frame.size.width / 2) {
         NSString *text = [NSString stringWithFormat:@"——%@", [DataUtil formatDecimal:[NSNumber numberWithFloat:_mMainHighMaxValue]]];
@@ -387,7 +406,8 @@
     }
 
     CGFloat y2 = [self.mainRenderer getY:_mMainLowMinValue];
-    CGFloat x2 = self.frame.size.width - ((self.mMainMinIndex - self.startIndex) * itemWidth + self.startX + self.candleWidth / 2);
+    CGFloat lowOffset = (CGFloat)((NSInteger)self.mMainMinIndex - (NSInteger)self.startIndex);
+    CGFloat x2 = self.frame.size.width - (lowOffset * itemWidth + self.startX + self.candleWidth / 2);
     if(x2 < self.frame.size.width / 2) {
         NSString *text = [NSString stringWithFormat:@"——%@", [DataUtil formatDecimal:[NSNumber numberWithFloat:_mMainLowMinValue]]];
         CGRect rect = [text getRectWithFontSize:ChartStyle_defaultTextSize];
@@ -487,6 +507,11 @@
 }
 -(void)drawRealTimePrice:(CGContextRef)context {
     KLineModel *point = self.datas.firstObject;
+    // 最新一条数据可能是尚未收线的占位行情，close 缺字段/非数字会变成
+    // NaN；NaN 与 max/min 的比较恒为 false，下面的边界兜底拦不住它，
+    // 最终 NaN 会作为 y 传给 CGContextMoveToPoint（"invalid numeric value"
+    // + 紧跟着的 "CGContextAddLineToPoint: no current point"）。
+    if (point == nil || !isfinite(point.close)) { return; }
     NSNumber *fixedPrice = [KLineStateManager manager].pricePrecision;
     NSString *fixedPriceStr = [NSString stringWithFormat:@"%@%@f", @"%.", fixedPrice];
 //    NSString *text = [NSString stringWithFormat:fixedPriceStr,point.close];
@@ -499,6 +524,13 @@
     } else if (point.close < self.mMainMinValue) {
         y = [self.mainRenderer getY:self.mMainMinValue];
     }
+    // 可视区间为平盘（max == min）时 scaleY 无穷大，close == max 的
+    // ∞ * 0 也会得到 NaN；这里统一拦下，并保证价格线落在主图内。
+    if (!isfinite(y)) { return; }
+    CGFloat minY = CGRectGetMinY(self.mainRect);
+    CGFloat maxY = CGRectGetMaxY(self.mainRect);
+    if (y < minY) { y = minY; }
+    if (y > maxY) { y = maxY; }
     if((-_scrollX - rect.size.width) > 0) {
         CGContextSetStrokeColorWithColor(context, ChartColors_realTimeLongLineColor.CGColor);
         CGContextSetLineWidth(context, RNKLFloat(priceLineWidth, 0.5));

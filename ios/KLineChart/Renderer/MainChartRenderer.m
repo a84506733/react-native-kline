@@ -11,6 +11,7 @@
 #import "NSString+Rect.h"
 #import "KLineStateManager.h"
 #import "DataUtil.h"
+#import <math.h>
 @interface MainChartRenderer()
 @property(nonatomic,assign) BOOL isLine;
 @property(nonatomic,assign) CGFloat contentPadding;
@@ -26,14 +27,24 @@
         self.contentPadding = 20;
         self.isLine = isLine;
         self.state = state;
-        CGFloat diff = maxValue - minValue;
-        CGFloat newscaly = (chartRect.size.height - _contentPadding)/ diff;
-        CGFloat newDiff = chartRect.size.height / newscaly;
-        CGFloat value = (newDiff - diff) / 2;
-        if(newDiff > diff) {
-            self.scaleY = newscaly;
-            self.maxValue += value;
-            self.minValue -= value;
+        // 父类已保证 self.maxValue/self.minValue 是有限值且区间 > 0。
+        // 这里仍逐项检查：高度恰为 contentPadding 时 newscaly 为 0、
+        // newDiff/value 会溢出成 inf，进而把 max/min 改成 ±inf，
+        // 让 getY 变成 0 * inf = NaN。
+        CGFloat diff = self.maxValue - self.minValue;
+        if (diff > 0 && isfinite(diff)) {
+            CGFloat newscaly = (chartRect.size.height - _contentPadding) / diff;
+            CGFloat newDiff = newscaly != 0 ? chartRect.size.height / newscaly : INFINITY;
+            CGFloat value = (newDiff - diff) / 2;
+            CGFloat newMax = self.maxValue + value;
+            CGFloat newMin = self.minValue - value;
+            if (isfinite(newscaly) && newscaly > 0 &&
+                isfinite(newDiff) && isfinite(value) && newDiff > diff &&
+                isfinite(newMax) && isfinite(newMin)) {
+                self.scaleY = newscaly;
+                self.maxValue = newMax;
+                self.minValue = newMin;
+            }
         }
     }
     return self;
@@ -216,7 +227,12 @@
 
 
 - (CGFloat)getY:(CGFloat)value {
-    return self.scaleY * (self.maxValue - value) + CGRectGetMinY(self.chartRect);
+    CGFloat y = self.scaleY * (self.maxValue - value) + CGRectGetMinY(self.chartRect);
+    // 最后一道防线：绝不把 NaN/Inf 坐标交给 CoreGraphics。
+    if (!isfinite(y)) {
+        return CGRectGetMinY(self.chartRect);
+    }
+    return y;
 }
 
 @end
